@@ -9,7 +9,8 @@ mysql = mysqlHelp.mysql_help()
 
 
 def do():
-    jsonLists = mysql.GetAll(" select viewspotid,mfwjson from j_viewspot where source='mafengwo' and mfwdetailjson is null ", ())
+    jsonLists = mysql.GetAll(
+        " select viewspotid,mfwjson from j_viewspot where source='mafengwo' and mfwdetailjson is null ", ())
     for scenicJson in jsonLists:
         # 数据原型字典
         paramInfo = {
@@ -60,9 +61,7 @@ def do():
                         viewspotid
                     ))
         except  Exception as e:
-            print('出现一次错误，%s'% e)
+            print('出现一次错误，%s' % e)
 
 
-
-if __name__ == '__main__':
-    do()
+do()

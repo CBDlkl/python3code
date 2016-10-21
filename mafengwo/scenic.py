@@ -4,7 +4,7 @@ import time
 import threading
 from mysql import mysqlHelp
 
-threadNum = 3
+threadNum = 10
 
 
 # 景点列表
@@ -18,8 +18,8 @@ def Get(url):
 def threadDo(cityids):
     mysql = mysqlHelp.mysql_help()
     for cityid in cityids:
-        time.sleep(1)
         try:
+            time.sleep(0.25)
             url = "http://www.mafengwo.cn/gonglve/sg_ajax.php?sAct=getMapData&iMddid=%s" % cityid[0]
             html = Get(url)
             jsonInfo = json.loads(html)["list"]

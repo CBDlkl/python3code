@@ -46,7 +46,7 @@ class mysql_help:
 
         return list
 
-    def GetAll(self, sql, tuples):
+    def GetAll(self, sql, tuples=()):
         open = self.Open()
         cur = open["cur"]
         conn = open["conn"]
