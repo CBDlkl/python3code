@@ -2,8 +2,11 @@ import pymysql
 
 
 class mysql_help:
-    def __init__(self):
-        print("基于pymysql的mysql操作初始化...")
+    isAutoClose = True
+
+    def __init__(self, isAutoClose=True):
+        self.isAutoClose = isAutoClose
+        # print("基于pymysql的mysql操作初始化")
 
     mysqlInfo = {
         "host": "172.16.5.15",
@@ -14,8 +17,13 @@ class mysql_help:
         "charset": "utf8"
     }
 
+    conn = None
+    cur = None
+
     def Open(self):
-        conn = pymysql.connect(
+        if self.conn is not None:
+            return
+        self.conn = pymysql.connect(
             host=self.mysqlInfo["host"],
             port=self.mysqlInfo["port"],
             user=self.mysqlInfo["user"],
@@ -23,69 +31,62 @@ class mysql_help:
             db=self.mysqlInfo["db"],
             charset=self.mysqlInfo["charset"]
         )
-        return {"cur": conn.cursor(), "conn": conn}
+        self.cur = self.conn.cursor()
 
-    def Close(self, cur, conn):
-        cur.close()
-        conn.commit()
-        conn.close()
+    def Close(self):
+        self.cur.close()
+        self.conn.commit()
+        self.conn.close()
 
     def GetSingel(self, sql, tuples):
-        open = self.Open()
-        cur = open["cur"]
-        conn = open["conn"]
+        self.Open()
 
         try:
-            count = cur.execute(sql, tuples)
+            count = self.cur.execute(sql, tuples)
             # list = cur.fetchall()
-            list = cur.fetchone()
+            list = self.cur.fetchone()
 
         except pymysql.Error as e:
             print("数据库操作发生异常:", e)
-        self.Close(cur=cur, conn=conn)
-
+        if self.isAutoClose:
+            self.Close()
         return list
 
     def GetAll(self, sql, tuples=()):
-        open = self.Open()
-        cur = open["cur"]
-        conn = open["conn"]
+        self.Open()
 
         try:
-            count = cur.execute(sql, tuples)
-            list = cur.fetchall()
+            count = self.cur.execute(sql, tuples)
+            list = self.cur.fetchall()
 
         except pymysql.Error as e:
             print("数据库操作发生异常:", e)
-        self.Close(cur=cur, conn=conn)
-
+        if self.isAutoClose:
+            self.Close()
         return list
 
     def InsertOrUpdate(self, sql, tuples):
-        open = self.Open()
-        cur = open["cur"]
-        conn = open["conn"]
+        self.Open()
 
         try:
-            count = cur.execute(sql, tuples)
+            count = self.cur.execute(sql, tuples)
         except pymysql.Error as e:
             print("数据库操作发生异常:", e)
-        self.Close(cur=cur, conn=conn)
+        if self.isAutoClose:
+            self.Close()
 
         return count
 
     # 返回自增长ID
     def InsertOutId(self, sql, tuples):
-        open = self.Open()
-        cur = open["cur"]
-        conn = open["conn"]
+        self.Open()
 
         try:
-            count = cur.execute(sql, tuples)
-            cur.execute("SELECT LAST_INSERT_ID()")
-            autoid = cur.fetchone()[0]
+            count = self.cur.execute(sql, tuples)
+            self.cur.execute("SELECT LAST_INSERT_ID()")
+            autoid = self.cur.fetchone()[0]
         except pymysql.Error as e:
             print("数据库操作发生异常:", e)
-        self.Close(cur=cur, conn=conn)
-
+        if self.isAutoClose:
+            self.Close()
         return autoid

@@ -1,4 +1,7 @@
 import json
+
+import time
+
 from mysql import mysqlHelp
 
 mysql = mysqlHelp.mysql_help()
@@ -45,23 +48,22 @@ def ClearPrice():
                            ())
 
     for singelRow in allInfo:
-        if singelRow[1] is 'qyer':
-            json.loads(singelRow[5])
 
-        if singelRow[1] is 'mafengwo':
+        if singelRow[1] == 'mafengwo':
             mfwJson = json.loads(singelRow[6])
             mfwPrice = mfwJson['门票']
-            if mfwPrice is not "":
+            if mfwPrice != "":
                 mysql.InsertOrUpdate(" update j_viewspot set price=%s where viewspotid=%s  ",
                                      (mfwPrice, singelRow[0]))
 
-        if singelRow[1] is 'youpu':
-            youpuJson = json.loads(singelRow[3])
-            youpuPrice = youpuJson['price']
-            if youpuPrice is not "":
-                mysql.InsertOrUpdate(" update j_viewspot set price=%s where viewspotid=%s  ",
-                                     (youpuPrice, singelRow[0]))
+        if singelRow[1] == 'youpu':
+            if singelRow[3] != '' and singelRow[3] != None:
+                youpuJson = json.loads(singelRow[3])
+                youpuPrice = youpuJson['price']
+                if youpuPrice != "":
+                    mysql.InsertOrUpdate(" update j_viewspot set price=%s where viewspotid=%s  ",
+                                         (youpuPrice, singelRow[0]))
 
 
-ClearSubjectAndViewSpot()
-print('ok!')
+
+print('ok!', time.localtime())
