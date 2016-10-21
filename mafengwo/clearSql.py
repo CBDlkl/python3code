@@ -1,3 +1,4 @@
+import json
 from mysql import mysqlHelp
 
 mysql = mysqlHelp.mysql_help()
@@ -23,6 +24,7 @@ def ClearSubject():
     print('搞定!')
 
 
+# 填充主题和景点的外键关系表
 def ClearSubjectAndViewSpot():
     qyers = mysql.GetAll(" select viewspotid,subject from j_viewspot where source='qyer' ", ())
     for singelQyer in qyers:
@@ -35,6 +37,30 @@ def ClearSubjectAndViewSpot():
                                      (singelQyer[0], subId[0]))
         except Exception as e:
             print('系统发生一次错误:', e)
+
+
+# 解析价格(price)
+def ClearPrice():
+    allInfo = mysql.GetAll(" select viewspotid,source,price,youpujson,mfwjson,qyerjson,mfwdetailjson from j_viewspot ",
+                           ())
+
+    for singelRow in allInfo:
+        if singelRow[1] is 'qyer':
+            json.loads(singelRow[5])
+
+        if singelRow[1] is 'mafengwo':
+            mfwJson = json.loads(singelRow[6])
+            mfwPrice = mfwJson['门票']
+            if mfwPrice is not "":
+                mysql.InsertOrUpdate(" update j_viewspot set price=%s where viewspotid=%s  ",
+                                     (mfwPrice, singelRow[0]))
+
+        if singelRow[1] is 'youpu':
+            youpuJson = json.loads(singelRow[3])
+            youpuPrice = youpuJson['price']
+            if youpuPrice is not "":
+                mysql.InsertOrUpdate(" update j_viewspot set price=%s where viewspotid=%s  ",
+                                     (youpuPrice, singelRow[0]))
 
 
 ClearSubjectAndViewSpot()
