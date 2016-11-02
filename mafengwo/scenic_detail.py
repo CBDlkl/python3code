@@ -3,6 +3,8 @@ import json
 from mysql import mysqlHelp
 from bs4 import BeautifulSoup
 
+# 废弃
+
 apiUrl = 'http://www.mafengwo.cn/poi/%s.html'
 
 mysql = mysqlHelp.mysql_help()
