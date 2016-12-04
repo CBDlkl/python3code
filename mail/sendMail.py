@@ -2,10 +2,10 @@ import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
 
-mailto_list = ['likeli@jsj.com.cn']  # 收件人(列表)
+mailto_list = ['likeli@***.cn']  # 收件人(列表)
 mail_host = "smtp.163.com"
-mail_user = "18672959719"
-mail_pass = "lkl5282784"
+mail_user = "186****9719"
+mail_pass = "****"
 mail_postfix = "163.com"
 
 
