@@ -1,3 +1,5 @@
+# 删除GitHub上所有的仓库
+
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.common.keys import Keys
